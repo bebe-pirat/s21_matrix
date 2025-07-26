@@ -7,7 +7,11 @@
 #define SUCCESS 1
 #define FAILURE 0
 
+#define EPSILON 1e-6
+
 #include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
 
 typedef struct matrix_struct {
     double** matrix;
