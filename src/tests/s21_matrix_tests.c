@@ -74,11 +74,181 @@ Suite *create_and_remove_suite(void) {
     return s;
 }
 
+START_TEST(test_eq_matrix_ok1) {
+    matrix_t mat1;
+    matrix_t mat2;
+    s21_create_matrix(2, 2, &mat1);
+    s21_create_matrix(2, 2, &mat2);
+    
+    ck_assert_int_eq(s21_eq_matrix(&mat1, &mat2), 1);
+
+    s21_remove_matrix(&mat1);
+    s21_remove_matrix(&mat2);
+}
+END_TEST
+
+START_TEST(test_eq_matrix_ok2) {
+    matrix_t mat1;
+    matrix_t mat2;
+    s21_create_matrix(2, 3, &mat1);
+    s21_create_matrix(2, 3, &mat2);
+    
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 3; j++) {
+            mat1.matrix[i][j] = i + j;
+            mat2.matrix[i][j] = i + j;
+        }
+    }
+
+    ck_assert_int_eq(s21_eq_matrix(&mat1, &mat2), 1);
+
+    s21_remove_matrix(&mat1);
+    s21_remove_matrix(&mat2);
+}
+END_TEST
+
+START_TEST(test_eq_matrix_ok3) {
+    matrix_t mat1;
+    matrix_t mat2;
+    s21_create_matrix(2, 3, &mat1);
+    s21_create_matrix(2, 3, &mat2);
+    
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 3; j++) {
+            mat1.matrix[i][j] = i + j / 2;
+            mat2.matrix[i][j] = i + j / 2;
+        }
+    }
+
+    ck_assert_int_eq(s21_eq_matrix(&mat1, &mat2), 1);
+
+    s21_remove_matrix(&mat1);
+    s21_remove_matrix(&mat2);
+}
+END_TEST
+
+START_TEST(test_eq_matrix_false_1) {
+    matrix_t mat1, mat2;
+    s21_create_matrix(2, 2, &mat1);
+    s21_create_matrix(2, 2, &mat2);
+
+    mat1.matrix[0][0] = 1.0; mat2.matrix[0][0] = 1.0;
+    mat1.matrix[0][1] = 2.0; mat2.matrix[0][1] = 2.1; 
+    mat1.matrix[1][0] = 3.0; mat2.matrix[1][0] = 3.0;
+    mat1.matrix[1][1] = 4.0; mat2.matrix[1][1] = 4.0;
+
+    ck_assert_int_eq(s21_eq_matrix(&mat1, &mat2), 0);
+
+    s21_remove_matrix(&mat1);
+    s21_remove_matrix(&mat2);
+}
+END_TEST
+
+START_TEST(test_eq_matrix_false_2) {
+    matrix_t mat1;
+    matrix_t mat2;
+    s21_create_matrix(2, 3, &mat1);
+    s21_create_matrix(3, 2, &mat2);
+
+    ck_assert_int_eq(s21_eq_matrix(&mat1, &mat2), 0);
+
+    s21_remove_matrix(&mat1);
+    s21_remove_matrix(&mat2);
+}
+END_TEST
+
+START_TEST(test_eq_matrix_false_3) {
+    matrix_t mat1;
+    matrix_t mat2;
+    s21_create_matrix(2, 2, &mat1);
+    s21_create_matrix(3, 2, &mat2);
+
+    ck_assert_int_eq(s21_eq_matrix(&mat1, &mat2), 0);
+
+    s21_remove_matrix(&mat1);
+    s21_remove_matrix(&mat2);
+}
+END_TEST
+
+START_TEST(test_eq_matrix_false_4) {
+    matrix_t mat1;
+    matrix_t mat2;
+    s21_create_matrix(2, 2, &mat1);
+    s21_create_matrix(2, 2, &mat2);
+
+    mat1.matrix[1][1] = 1;
+
+    ck_assert_int_eq(s21_eq_matrix(&mat1, &mat2), 0);
+
+    s21_remove_matrix(&mat1);
+    s21_remove_matrix(&mat2);
+}
+END_TEST
+
+START_TEST(test_eq_matrix_false_5) {
+    matrix_t mat1;
+    matrix_t mat2;
+    s21_create_matrix(2, 2, &mat1);
+    s21_create_matrix(2, 2, &mat2);
+
+    for(int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            mat1.matrix[i][j] = i;
+            mat1.matrix[i][j] = i + j;
+        }
+    }
+    
+    ck_assert_int_eq(s21_eq_matrix(&mat1, &mat2), 0);
+
+    s21_remove_matrix(&mat1);
+    s21_remove_matrix(&mat2);
+}
+END_TEST
+
+START_TEST(test_eq_matrix_false_6) {
+    matrix_t A, B;
+    s21_create_matrix(2, 2, &A);
+    s21_create_matrix(2, 2, &B);
+
+    ck_assert_int_eq(s21_eq_matrix(NULL, &B), FAILURE);
+    ck_assert_int_eq(s21_eq_matrix(&A, NULL), FAILURE);
+    ck_assert_int_eq(s21_eq_matrix(NULL, NULL), FAILURE);
+
+    matrix_t C = {NULL, 0, 0};
+    ck_assert_int_eq(s21_eq_matrix(&A, &C), FAILURE);
+
+    s21_remove_matrix(&A);
+    s21_remove_matrix(&B);
+}
+END_TEST
+
+Suite *equal_suite(void) {
+    Suite *s;
+    TCase *tc_eq;
+    
+    s = suite_create("Matrix");
+
+    tc_eq = tcase_create("Equal");
+    tcase_add_test(tc_eq, test_eq_matrix_ok1);
+    tcase_add_test(tc_eq, test_eq_matrix_ok2);
+    tcase_add_test(tc_eq, test_eq_matrix_ok3);
+    tcase_add_test(tc_eq, test_eq_matrix_false_1);
+    tcase_add_test(tc_eq, test_eq_matrix_false_2);
+    tcase_add_test(tc_eq, test_eq_matrix_false_3);
+    tcase_add_test(tc_eq, test_eq_matrix_false_4);
+    tcase_add_test(tc_eq, test_eq_matrix_false_5);
+    tcase_add_test(tc_eq, test_eq_matrix_false_6);
+    suite_add_tcase(s, tc_eq);
+    
+    return s;
+}
+
 int main() {
   int number_failed;
   Suite *suite = NULL;
   SRunner *runner = srunner_create(suite);
   Suite *suits_list[] = {create_and_remove_suite(),
+                         equal_suite(),
                          NULL};
 
   for (Suite **current = suits_list; *current != NULL; current++)
