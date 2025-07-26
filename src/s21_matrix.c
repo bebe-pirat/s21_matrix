@@ -1,4 +1,5 @@
 #include "s21_matrix.h"
+#include <stdio.h>
 
 // typedef struct matrix_struct {
 //     double** matrix;
@@ -9,7 +10,7 @@
 int s21_create_matrix(int rows, int columns, matrix_t *result) {
     int error = 0; 
 
-    if (rows == 0 || columns == 0) error = 1;
+    if (result == NULL || rows <= 0 || columns <= 0) error = 1;
     if (!error) {
         result->rows = rows;
         result->columns = columns;
@@ -43,6 +44,7 @@ void s21_remove_matrix(matrix_t *A) {
         }
 
         free(A->matrix);
+        A->matrix = NULL;
         A->rows = 0;
         A->columns = 0;
     }
