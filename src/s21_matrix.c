@@ -69,3 +69,26 @@ int s21_eq_matrix(matrix_t *A, matrix_t *B) {
     
     return result;
 }
+
+int s21_sum_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
+    int error = S21_OK;
+
+    if (A == NULL || B == NULL || A->matrix == NULL || B->matrix == NULL) error = S21_INCORRECT_MATRIX;
+    if (!error && (A->rows <= 0 || A->columns <= 0 || B->rows <= 0 || B->columns <= 0)) error = S21_INCORRECT_MATRIX;
+    
+    if (!error && (A->rows != B->rows || A->columns != B->columns)) error = S21_ERROR_CALCULATION;
+
+    int rows = A->rows, columns = A->columns;
+    
+    int error = s21_create_matrix(rows, columns, result);
+
+    if (!error) {   
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                result->matrix[i][j] = A->matrix[i][j] + B->matrix[i][j];
+            }
+        }
+    }
+
+    return error;
+}
