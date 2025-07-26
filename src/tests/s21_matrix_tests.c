@@ -78,7 +78,7 @@ int main() {
   int number_failed;
   Suite *suite = NULL;
   SRunner *runner = srunner_create(suite);
-  Suite *suits_list[] = {create_and_remove_suite,
+  Suite *suits_list[] = {create_and_remove_suite(),
                          NULL};
 
   for (Suite **current = suits_list; *current != NULL; current++)
