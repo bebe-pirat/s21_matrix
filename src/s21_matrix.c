@@ -1,5 +1,4 @@
 #include "s21_matrix.h"
-#include <stdio.h>
 
 // typedef struct matrix_struct {
 //     double** matrix;
@@ -33,7 +32,7 @@ int s21_create_matrix(int rows, int columns, matrix_t *result) {
             }
         }
     }
-    
+
     return error;
 }
 
@@ -52,13 +51,17 @@ void s21_remove_matrix(matrix_t *A) {
 
 int s21_eq_matrix(matrix_t *A, matrix_t *B) {
     int result = SUCCESS;
-    if (A == NULL || B == NULL) result = FAILURE;
-    else {
+
+    if (A == NULL || B == NULL || A->matrix == NULL || B->matrix == NULL) result = FAILURE;
+    
+    if (result && (A->rows <= 0 || A->columns <= 0 || B->rows <= 0 || B->columns <= 0)) result = FAILURE;
+    
+    if (result == SUCCESS) {
         if (A->rows != B->rows || A->columns != B->columns) result = FAILURE;
         else {
-            for (int i = 0; i < A->rows; i++) {
-                for (int j = 0; j < A->columns; j++) {
-                    if (A->matrix[i][j] != B->matrix[i][j]) result = FAILURE;
+            for (int i = 0; i < A->rows && result == SUCCESS; i++) {
+                for (int j = 0; j < A->columns && result == SUCCESS; j++) {
+                  if (fabs(A->matrix[i][j] - B->matrix[i][j]) > EPSILON) result = FAILURE;
                 }
             }
         }
