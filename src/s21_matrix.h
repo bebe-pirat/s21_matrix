@@ -2,7 +2,7 @@
 
 #define S21_OK 0
 #define S21_INCORRECT_MATRIX 1
-#define S21_ERROR_CALCULATION
+#define S21_ERROR_CALCULATION 2
 
 #define SUCCESS 1
 #define FAILURE 0
